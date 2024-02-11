@@ -7,6 +7,7 @@
 import numpy as np
 import numpy.ma as ma
 from numpy.linalg import eig
+from scipy import stats
 
 
 """
@@ -167,7 +168,7 @@ class Cluster:
 """
 Class OrchardBouman performs orchard bouman clustering to split an image into 2^k number of child nodes, where each
 child node is an instance of Cluster. This is accomplished by method orchard_bouman. The resulting clustered color image
-or binary segmentation mask (if k = 1) can be returned with method construct_image.
+can be returned with method construct_image.
 
 Inputs:
 Image: 3-dimensional numpy array of RGB image
@@ -217,10 +218,8 @@ class OrchardBouman:
         self.nodes = nodes
         print("All nodes created.")
 
-    # construct a color image (segmentation_mask=False) or binary segmentation image (segmentation_mask=True).
-    # Defaults to segmentation_mask=False
+    # construct a color image
     # color image assigns each pixel to that channels average pixel value taken from Q
-    # trimap assigns an int value between 0 and length of nodes for each node
     def construct_image(self, segmentation_mask=False):
         # construct image template made of nan values
         image_temp = np.empty((self.image.shape[0], self.image.shape[1], 3))
@@ -234,17 +233,12 @@ class OrchardBouman:
                 # find pixels that belong to the current cluster
                 indices = np.nonzero(~np.isnan(temp[:, :, j]))
                 # # for every pixel assigned to cluster, set color equal to Q attribute, avg pixel value
-                if segmentation_mask is False:
-                    image_temp[:, :, j][indices] = self.nodes[i].Q[0, j]
-                else:
-                    if len(self.nodes) == 2:
-                        # assigns an int color value of 0 or 1
-                        image_temp[:, :, j][indices] = i
-                    else:
-                        print("Too many nodes to generate binary image mask.")
-
+                image_temp[:, :, j][indices] = self.nodes[i].Q[0, j]
         # return clustered color image
         return image_temp
+
+
+
 
     # method to check input parameters on initialization
     def _check_params(self):
