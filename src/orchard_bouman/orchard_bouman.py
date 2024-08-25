@@ -9,39 +9,38 @@ import numpy.ma as ma
 from numpy.linalg import eig
 
 
-"""
-Class Cluster finds initial clusters and splits child nodes based on orchard bouman clustering given an image and 
-optional tuple of 3x3 R matrix, 1x3 M matrix, and points array of shape image, where 0 values represent pixels belonging
- to that cluster.
- To perform the initial node split, Cluster only requires the image and creates the initial R, M and points array before splitting the
-initial node into two nodes. Specifically, the split_cluster function returns R, M, and points array for each child
-node. Create_new_cluster uses the above function to create and return two new Cluster objects, each representing one of
-the child nodes.
-
-Note: It is unlikely that this class will be accessed directly. For the purposes of performing clustering on an image
-Cluster is accessed by the OrchardBouman class.
-
-Inputs:
-Image: 3-dimensional numpy array of RGB image
-RMp: If None, initializes RMp from image. Else, RMp should be a tuple of 3x3 R matrix, 1x3 M matrix, and points array
-    NOTE: RMp is called internally in method create_new_cluster. RMp should not be supplied for an initial node split.
-    
-Attributes:
-img: Original 3-dimensional numpy array of RGB image
-RMp: tuple of 3x3 R matrix, 1x3 M matrix, and points array for Cluster object
-channels: list of 2-dimensional numpy arrays, with each element representing the R, G, and B color channel
-R: 3x3 matrix representing the sum of squares of pixel values belonging to that node in each RGB color channel
-M: 1x3 matrix representing the sum of pixel values belonging to that node in each RGB color channel
-point_arr: 2-dimensional numpy zeros array of size image. Zeros represent pixel locations assigned to given node, else
-    the value is np.nan
-N: total number of pixels in node
-Q: 1x3 matrix representing the average pixel value for each RGB color channel. Q = M / N
-lmbda: maximum eigenvalue
-e: principle eigenvector
-"""
-
-
 class Cluster:
+    """
+    Class Cluster finds initial clusters and splits child nodes based on orchard bouman clustering given an image and
+    optional tuple of 3x3 R matrix, 1x3 M matrix, and points array of shape image, where 0 values represent pixels belonging
+     to that cluster.
+     To perform the initial node split, Cluster only requires the image and creates the initial R, M and points array before splitting the
+    initial node into two nodes. Specifically, the split_cluster function returns R, M, and points array for each child
+    node. Create_new_cluster uses the above function to create and return two new Cluster objects, each representing one of
+    the child nodes.
+
+    Note: It is unlikely that this class will be accessed directly. For the purposes of performing clustering on an image
+    Cluster is accessed by the OrchardBouman class.
+
+    Inputs:
+    Image: 3-dimensional numpy array of RGB image
+    RMp: If None, initializes RMp from image. Else, RMp should be a tuple of 3x3 R matrix, 1x3 M matrix, and points array
+        NOTE: RMp is called internally in method create_new_cluster. RMp should not be supplied for an initial node split.
+
+    Attributes:
+    img: Original 3-dimensional numpy array of RGB image
+    RMp: tuple of 3x3 R matrix, 1x3 M matrix, and points array for Cluster object
+    channels: list of 2-dimensional numpy arrays, with each element representing the R, G, and B color channel
+    R: 3x3 matrix representing the sum of squares of pixel values belonging to that node in each RGB color channel
+    M: 1x3 matrix representing the sum of pixel values belonging to that node in each RGB color channel
+    point_arr: 2-dimensional numpy zeros array of size image. Zeros represent pixel locations assigned to given node, else
+        the value is np.nan
+    N: total number of pixels in node
+    Q: 1x3 matrix representing the average pixel value for each RGB color channel. Q = M / N
+    lmbda: maximum eigenvalue
+    e: principle eigenvector
+    """
+
     def __init__(self, image, RMp=None) -> None:
         self.img = image
         self.RMp = RMp
@@ -164,21 +163,20 @@ class Cluster:
                 raise TypeError(f"If RMp is supplied it should be a tuple or list, not {type(self.RMp)}.")
 
 
-"""
-Class OrchardBouman performs orchard bouman clustering to split an image into 2^k number of child nodes, where each
-child node is an instance of Cluster. This is accomplished by method orchard_bouman. The resulting clustered color image
-can be returned with method construct_image.
-
-Inputs:
-Image: 3-dimensional numpy array of RGB image
-k: number of times to split nodes. Total number of resulting child nodes == 2^k
-
-Attributes:
-nodes: List of Cluster objects for each child node of length 2^k
-"""
-
-
 class OrchardBouman:
+    """
+    Class OrchardBouman performs orchard bouman clustering to split an image into 2^k number of child nodes, where each
+    child node is an instance of Cluster. This is accomplished by method orchard_bouman. The resulting clustered color image
+    can be returned with method construct_image.
+
+    Inputs:
+    Image: 3-dimensional numpy array of RGB image
+    k: number of times to split nodes. Total number of resulting child nodes == 2^k
+
+    Attributes:
+    nodes: List of Cluster objects for each child node of length 2^k
+    """
+
     def __init__(self, image, k) -> None:
         self.image = image
         self.k = k
@@ -235,9 +233,6 @@ class OrchardBouman:
                 image_temp[:, :, j][indices] = self.nodes[i].Q[0, j]
         # return clustered color image
         return image_temp
-
-
-
 
     # method to check input parameters on initialization
     def _check_params(self):
