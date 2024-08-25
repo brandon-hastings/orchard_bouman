@@ -11,7 +11,7 @@ pip install orchard-bouman
 ```
 
 ### Usage:
-Once your image is created as a NumPy array, simply use:\
+Once your image is created as a NumPy array, simply use:
 - `ob = OrchardBouman(image, k)` \
 where `image` is the image you want clustered in RGB format and `k` \
 is the number of times to split nodes. The final number of nodes = 2^k.
