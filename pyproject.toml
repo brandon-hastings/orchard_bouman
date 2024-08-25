@@ -11,13 +11,12 @@ readme = "README.md"
 description = 'Python implementation of Orchard Bouman clustering using NumPy'
 #packages=find_packages(where="orchard_bouman"),
 #package_dir={"": "orchard_bouman"},
-url='https://github.com/brandon-hastings/orchard_bouman'
 license = {file = "LICENSE"}
 authors = [{name = 'Brandon Hastings', email = 'bhastings23320@gmail.com'}]
 classifiers = ["Programming Language :: Python"]
 keywords = ["color quantization", "image clustering", "orchard bouman"]
 dependencies = ["numpy >= 1.26.4"]
-python_requires = ">=3.10"
+requires-python = ">=3.10"
 
 [project.urls]
 Homepage = 'https://github.com/brandon-hastings/orchard_bouman'
